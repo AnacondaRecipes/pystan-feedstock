@@ -1,0 +1,24 @@
+From 70c373117e82bef405cb77bb104e5c305047703d Mon Sep 17 00:00:00 2001
+From: Nehal J Wani <nwani@tower-research.com>
+Date: Fri, 17 Nov 2017 20:29:37 +0530
+Subject: [PATCH] Add compiler flag for realigning stack
+
+---
+ setup.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/setup.py b/setup.py
+index 2bce350..e8e3c05 100644
+--- a/setup.py
++++ b/setup.py
+@@ -115,6 +115,7 @@ extra_compile_args = [
+     '-ftemplate-depth-256',
+     '-Wno-unused-function',
+     '-Wno-uninitialized',
++    '-mstackrealign',
+ ]
+ 
+ if platform.platform().startswith('Win'):
+-- 
+2.7.4
+
