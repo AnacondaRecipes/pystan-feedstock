@@ -1,6 +1,6 @@
 {% set name = "pystan" %}
-{% set version = "2.19.1.1" %}
-{% set sha256sum = "fa8bad8dbc0da22bbe6f36af56c9abbfcf10f92df8ce627d59a36bd8d25eb038" %}
+{% set version = "3.3.0" %}
+{% set sha256sum = "44a26a88b70f9f3b0d20864fb0f72366b902b58908d6ad4360758d037c0ed3f4" %}
 
 package:
   name: {{ name }}
