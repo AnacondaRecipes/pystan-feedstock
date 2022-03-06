@@ -14,7 +14,7 @@ source:
     - 0001-Add-compiler-flag-for-realigning-stack.patch  # [win32 and vc<14]
 
 build:
-  number: 0
+  number: 1
   detect_binary_files_with_prefix: False
 
 requirements:
