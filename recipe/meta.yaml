@@ -49,6 +49,7 @@ outputs:
         - m2w64-toolchain        # [win and vc<14]
       run:
         - {{ pin_compatible('numpy') }}
+        - setuptools
         - python
         - cython >=0.22,!=0.25.1
     
