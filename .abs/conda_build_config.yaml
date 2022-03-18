@@ -167,7 +167,8 @@ nodejs:
   - 8.12
 # we build for an old version of numpy for forward compatibility
 numpy:
-  - 1.16
+  - 1.16  # [not osx or not arm64]
+  - 1.19  # [osx and arm64]
 openblas:
   - 0.3.3   # [not s390x]
   - 0.3.10  # [s390x]
