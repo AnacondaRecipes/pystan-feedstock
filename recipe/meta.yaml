@@ -17,31 +17,21 @@ build:
   number: 1
   detect_binary_files_with_prefix: False
 
-requirements:
-  run:
-    - pystan-base
-    # http://pystan.readthedocs.io/en/latest/windows.html
-    # PyStan requires a C++ compiler for building models. For
-    # full support of vectorized functions, gcc is recommended.
-    - libpython              # [win]
-    - m2w64-toolchain        # [win]
-    - {{ compiler('c') }}    # [not win]
-    - {{ compiler('cxx') }}  # [not win]
-
 outputs:
   - name: pystan-base
     script: build_base.bat  # [win]
     script: build_base.sh  # [not win]
     requirements:
-      build:
-        - m2-patch               # [win and vc<14]
-        - {{ compiler('c') }}    # [not (win and vc<14)]
-        - {{ compiler('cxx') }}  # [not (win and vc<14)]
       host:
         - python
         - setuptools
         - numpy
         - cython >=0.22,!=0.25.1
+        # Normally these would go in build, not host, but
+        # we need the compiler in the pystan run environment
+        - m2-patch               # [win and vc<14]
+        - {{ compiler('c') }}    # [not (win and vc<14)]
+        - {{ compiler('cxx') }}  # [not (win and vc<14)]
         # The VS2008 build of PyStan fails with:
         # fatal error C1060: compiler is out of heap space
         # so we use the m2w64-toolchain here
@@ -52,10 +42,20 @@ outputs:
         - setuptools
         - python
         - cython >=0.22,!=0.25.1
-    
-test:
-  imports:
-    - pystan
+    test:
+      imports:
+        - pystan
+  - name: pystan
+    requirements:
+      run:
+        - {{ pin_subpackage('pystan-base', max_pin="x.x.x.x") }}
+        # http://pystan.readthedocs.io/en/latest/windows.html
+        # PyStan requires a C++ compiler for building models. For
+        # full support of vectorized functions, gcc is recommended.
+        - libpython              # [win]
+        - m2w64-toolchain        # [win]
+        - {{ compiler('c') }}    # [not win]
+        - {{ compiler('cxx') }}  # [not win]
 
 about:
   home: http://mc-stan.org/interfaces/pystan.html
