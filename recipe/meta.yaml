@@ -31,11 +31,20 @@ requirements:
     - pysimdjson >=5.0.2,<7
     - numpy >=1.19
     - clikit >=0.6,<1.0
+    - marshmallow <4
     - setuptools
 
 test:
   imports:
-    - pystan
+    - stan
+    - stan.common
+    - stan.fit
+    - stan.model
+    - stan.plugins
+  commands:
+    - pip check
+  requires:
+    - pip
 
 about:
   home: http://mc-stan.org/interfaces/pystan.html
