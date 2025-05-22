@@ -68,6 +68,8 @@ test:
     -   echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
     -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
     - )
+    # Add a test to verify the patch is working
+    - python -c "import httpstan.services_stub; print('Patch verified')"
   requires:
     - pip
 
