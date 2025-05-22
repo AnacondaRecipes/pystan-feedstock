@@ -8,8 +8,6 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
-  patches:  # [win]
-    - patches/0001_use_spawn_on_windows.patch  # [win]
 
 build:
   number: 0
@@ -22,7 +20,6 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - m2-patch  # [win]
   host:
     - python
     - pip
