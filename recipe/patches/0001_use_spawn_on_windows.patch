@@ -1,5 +1,11 @@
-source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
-  patches:
-    - use_spawn_on_windows.patch
+--- httpstan/services_stub.py.orig
++++ httpstan/services_stub.py
+@@ -1,6 +1,9 @@
+ import concurrent.futures
+ import multiprocessing as mp
++import sys
+
+-ctx = mp.get_context("fork")
++ctx = mp.get_context("spawn" if sys.platform == "win32" else "fork")
+
+ executor = concurrent.futures.ProcessPoolExecutor(mp_context=ctx)
