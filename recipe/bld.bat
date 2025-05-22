@@ -16,5 +16,5 @@ if %VS_MAJOR% LSS 10 (
   if errorlevel GTR 1 exit 1
 )
 
-python setup.py install -q --single-version-externally-managed --record=record.txt
+python setup.py install -q --single-version-externally-managed --record=record.txt --no-deps --no-build-isolation
 if errorlevel 1 exit 1
