@@ -47,9 +47,10 @@ test:
     - pip
 
 about:
-  home: http://mc-stan.org/interfaces/pystan.html
-  license: GPLv3
+  home: https://mc-stan.org/interfaces/pystan.html
+  license: GPL-3.0-only
   license_file: LICENSE
+  license_family: GPL
   summary: Python interface to Stan, a package for Bayesian inference
   description: |
     PyStan provides a Python interface to Stan, a package for Bayesian
