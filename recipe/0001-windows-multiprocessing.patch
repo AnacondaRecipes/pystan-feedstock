@@ -1,5 +1,4 @@
-diff --git a/httpstan/services_stub.py b/httpstan/services_stub.py
-index 1234567..89abcde 100644
+diff -Naur a/httpstan/services_stub.py b/httpstan/services_stub.py
 --- a/httpstan/services_stub.py
 +++ b/httpstan/services_stub.py
 @@ -33,7 +33,10 @@ def init_worker():
