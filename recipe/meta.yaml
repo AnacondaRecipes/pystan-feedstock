@@ -35,6 +35,9 @@ requirements:
     - setuptools
 
 test:
+  commands:
+    - pip check
+  # multiprocessing.get_context("fork") is unsupported on Windows
   skip: true  # [win]
   imports:
     - stan
@@ -42,8 +45,6 @@ test:
     - stan.fit
     - stan.model
     - stan.plugins
-  commands:
-    - pip check
   requires:
     - pip
 
