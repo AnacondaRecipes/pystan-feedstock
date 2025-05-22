@@ -32,7 +32,6 @@ requirements:
     - numpy >=1.19
     - clikit >=0.6,<1.0
     - marshmallow <4
-    - setuptools
 
 test:
   imports:
