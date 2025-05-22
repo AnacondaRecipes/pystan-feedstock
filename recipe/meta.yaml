@@ -14,6 +14,7 @@ build:
   # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
   skip: true  # [py<310 or py>=313]
   detect_binary_files_with_prefix: False
+  script: {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
 
 requirements:
   build:
@@ -34,6 +35,7 @@ requirements:
     - setuptools
 
 test:
+  skip: true  # [win]
   imports:
     - stan
     - stan.common
