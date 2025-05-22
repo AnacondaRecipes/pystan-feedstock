@@ -16,15 +16,15 @@ build:
   detect_binary_files_with_prefix: False
   script:
     - {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
-    - if [ "$(uname)" == "Windows_NT" ]; then
-    -   echo "import sys, concurrent.futures, multiprocessing as mp" > $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    -   echo "def init_worker():" >> $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    -   echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    -   echo "if sys.platform == 'win32':" >> $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    -   echo "else:" >> $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> $PREFIX/Lib/site-packages/httpstan/services_stub.py
-    - fi
+    - if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
+    -   echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    -   echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    -   echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    -   echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    -   echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    - )
 
 requirements:
   build:
