@@ -48,6 +48,20 @@ requirements:
     - setuptools
 
 test:
+  # Apply the Windows multiprocessing patch before any imports
+  # This is necessary because the test environment uses a fresh installation
+  # and needs the same platform-specific multiprocessing handling
+  - if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
+  -   echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  -   echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  -   echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  -   echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  -   echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  -   echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+  - )
+  # Verify the patch is working before attempting imports
+  - python -c "import httpstan.services_stub; print('Patch verified')"
   imports:
     - stan
     - stan.common
@@ -56,20 +70,6 @@ test:
     - stan.plugins
   commands:
     - pip check
-    # Re-apply the Windows multiprocessing patch in test environment
-    # This is necessary because the test environment uses a fresh installation
-    # and needs the same platform-specific multiprocessing handling
-    - if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
-    -   echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    - )
-    # Add a test to verify the patch is working
-    - python -c "import httpstan.services_stub; print('Patch verified')"
   requires:
     - pip
 
