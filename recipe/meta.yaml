@@ -11,19 +11,19 @@ source:
 
 build:
   number: 0
+  # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
+  skip: true  # [py<310 or py>=313]
   detect_binary_files_with_prefix: False
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-
   host:
     - python
     - pip
     - setuptools
     - poetry-core >=1.0.0
-
   run:
     - python
     - aiohttp >=3.6,<4.0
