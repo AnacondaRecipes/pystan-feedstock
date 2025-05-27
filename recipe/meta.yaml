@@ -50,21 +50,7 @@ requirements:
 
 test:
   commands:
-    - |
-      python -c "
-      import os
-      import sys
-      if sys.platform == 'win32':
-          with open(os.path.join(os.environ['PREFIX'], 'Lib', 'site-packages', 'httpstan', 'services_stub.py'), 'w') as f:
-              f.write('''import sys, concurrent.futures, multiprocessing as mp
-def init_worker():
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-if sys.platform == 'win32':
-    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)
-else:
-    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)
-''')
-      "
+    - python -c "import os, sys; open(os.path.join(os.environ['PREFIX'], 'Lib', 'site-packages', 'httpstan', 'services_stub.py'), 'w').write('''import sys\nimport concurrent.futures\nimport multiprocessing as mp\nimport signal\n\ndef init_worker():\n    signal.signal(signal.SIGINT, signal.SIG_IGN)\n\nif sys.platform == 'win32':\n    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)\nelse:\n    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)\n''') if sys.platform == 'win32' else None"
     - python -c "import httpstan.services_stub; print('Patch verified')"
     - pip check
   imports:
