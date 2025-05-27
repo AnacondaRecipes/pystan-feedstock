@@ -19,15 +19,16 @@ build:
     # Patch httpstan's services_stub.py to handle Windows multiprocessing
     # Windows doesn't support 'fork' context, so we need to use the default 'spawn' context
     # This patch is applied during build to ensure the package is built correctly
-    - if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
-    -   echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-    - )
+    - |
+      if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
+        echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+        echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+        echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+        echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+        echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+        echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+        echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      )
 
 requirements:
   build:
@@ -51,15 +52,16 @@ test:
   # Apply the Windows multiprocessing patch before any imports
   # This is necessary because the test environment uses a fresh installation
   # and needs the same platform-specific multiprocessing handling
-  - if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
-  -   echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  -   echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  -   echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  -   echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  -   echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  -   echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  -   echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-  - )
+  - |
+    if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
+      echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+      echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
+    )
   # Verify the patch is working before attempting imports
   - python -c "import httpstan.services_stub; print('Patch verified')"
   imports:
