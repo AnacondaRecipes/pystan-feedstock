@@ -12,23 +12,12 @@ source:
 build:
   number: 0
   # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
-  skip: true  # [unix or (py<310 or py>=313)]
+  # Windows is not supported in pystan 3
+  # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
+  skip: true  # [win or (py<310 or py>=313)]
   detect_binary_files_with_prefix: False
   script:
     - {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
-    # Patch httpstan's services_stub.py to handle Windows multiprocessing
-    # Windows doesn't support 'fork' context, so we need to use the default 'spawn' context
-    # This patch is applied during build to ensure the package is built correctly
-    - |
-      if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
-        echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-      )
 
 requirements:
   build:
@@ -50,8 +39,6 @@ requirements:
 
 test:
   commands:
-    - python -c "import os, sys; open(os.path.join(os.environ['PREFIX'], 'Lib', 'site-packages', 'httpstan', 'services_stub.py'), 'w').write('''import sys\nimport concurrent.futures\nimport multiprocessing as mp\nimport signal\n\ndef init_worker():\n    signal.signal(signal.SIGINT, signal.SIG_IGN)\n\nif sys.platform == 'win32':\n    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)\nelse:\n    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)\n''') if sys.platform == 'win32' else None"
-    - python -c "import httpstan.services_stub; print('Patch verified')"
     - pip check
   imports:
     - stan
