@@ -51,15 +51,20 @@ requirements:
 test:
   commands:
     - |
-      if "%CONDA_BUILD_CROSS_COMPILATION%" == "1" (
-        echo "import sys, concurrent.futures, multiprocessing as mp" > %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "def init_worker():" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "    signal.signal(signal.SIGINT, signal.SIG_IGN)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "if sys.platform == 'win32':" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "else:" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-        echo "    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)" >> %PREFIX%\Lib\site-packages\httpstan\services_stub.py
-      )
+      python -c "
+      import os
+      import sys
+      if sys.platform == 'win32':
+          with open(os.path.join(os.environ['PREFIX'], 'Lib', 'site-packages', 'httpstan', 'services_stub.py'), 'w') as f:
+              f.write('''import sys, concurrent.futures, multiprocessing as mp
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+if sys.platform == 'win32':
+    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)
+else:
+    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context('fork'), initializer=init_worker)
+''')
+      "
     - python -c "import httpstan.services_stub; print('Patch verified')"
     - pip check
   imports:
