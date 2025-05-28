@@ -26,7 +26,6 @@ requirements:
   host:
     - python
     - pip
-    - setuptools
     - poetry-core >=1.0.0
   run:
     - python
