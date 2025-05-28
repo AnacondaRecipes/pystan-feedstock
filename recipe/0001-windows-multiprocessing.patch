@@ -1,0 +1,12 @@
+diff -Naur a/httpstan/services_stub.py b/httpstan/services_stub.py
+--- a/httpstan/services_stub.py
++++ b/httpstan/services_stub.py
+@@ -33,7 +33,10 @@ def init_worker():
+     """Initialize worker process."""
+     signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+-executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context("fork"), initializer=init_worker)
++if sys.platform == "win32":
++    executor = concurrent.futures.ProcessPoolExecutor(initializer=init_worker)
++else:
++    executor = concurrent.futures.ProcessPoolExecutor(mp_context=mp.get_context("fork"), initializer=init_worker)

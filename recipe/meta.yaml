@@ -1,60 +1,54 @@
 {% set name = "pystan" %}
-{% set version = "2.19.1.1" %}
-{% set sha256sum = "fa8bad8dbc0da22bbe6f36af56c9abbfcf10f92df8ce627d59a36bd8d25eb038" %}
+{% set version = "3.10.0" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256sum }}
-  patches:
-    - 0001-Add-compiler-flag-for-realigning-stack.patch  # [win32 and vc<14]
+  sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
 
 build:
   number: 0
-  detect_binary_files_with_prefix: False
+  # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
+  # Windows is not supported in pystan 3
+  # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
+  skip: true  # [win or (py<310 or py>=313)]
+  script:
+    - {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
 
 requirements:
-  build:
-    - m2-patch               # [win and vc<14]
-    - {{ compiler('c') }}    # [not (win and vc<14)]
-    - {{ compiler('cxx') }}  # [not (win and vc<14)]
-
   host:
     - python
-    - setuptools
-    - numpy
-    - cython >=0.22,!=0.25.1
-    # The VS2008 build of PyStan fails with:
-    # fatal error C1060: compiler is out of heap space
-    # so we use the m2w64-toolchain here
-    - libpython              # [win and vc<14]
-    - m2w64-toolchain        # [win and vc<14]
-
+    - pip
+    - poetry-core >=1.0.0
   run:
-    - {{ pin_compatible('numpy') }}
-    # http://pystan.readthedocs.io/en/latest/windows.html
-    # PyStan requires a C++ compiler for building models. For
-    # full support of vectorized functions, gcc is recommended.
-    - libpython              # [win]
-    - m2w64-toolchain        # [win]
-    - {{ compiler('c') }}    # [not win]
-    - {{ compiler('cxx') }}  # [not win]
     - python
-    - cython >=0.22,!=0.25.1
-    - matplotlib
+    - aiohttp >=3.6,<4.0
+    - httpstan >=4.13,<4.14
+    - pysimdjson >=5.0.2,<7
+    - numpy >=1.19
+    - clikit >=0.6,<0.7
+    - setuptools
 
 test:
+  commands:
+    - pip check
   imports:
-    - pystan
+    - stan
+    - stan.common
+    - stan.fit
+    - stan.model
+    - stan.plugins
+  requires:
+    - pip
 
 about:
-  home: http://mc-stan.org/interfaces/pystan.html
-  license: GPLv3
+  home: https://mc-stan.org/interfaces/pystan.html
+  license: ISC
   license_file: LICENSE
+  license_family: Other
   summary: Python interface to Stan, a package for Bayesian inference
   description: |
     PyStan provides a Python interface to Stan, a package for Bayesian
