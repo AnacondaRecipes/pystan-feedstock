@@ -20,9 +20,6 @@ build:
     - {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
 
 requirements:
-  build:
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
   host:
     - python
     - pip
