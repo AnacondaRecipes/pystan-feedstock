@@ -26,10 +26,10 @@ requirements:
   run:
     - python
     - aiohttp >=3.6,<4.0
-    - httpstan >=4.13,<5.0
+    - httpstan >=4.13,<4.14
     - pysimdjson >=5.0.2,<7
     - numpy >=1.19
-    - clikit >=0.6,<1.0
+    - clikit >=0.6,<0.7
     - setuptools
 
 test:
