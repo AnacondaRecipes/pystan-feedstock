@@ -15,7 +15,6 @@ build:
   # Windows is not supported in pystan 3
   # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
   skip: true  # [win or (py<310 or py>=313)]
-  detect_binary_files_with_prefix: False
   script:
     - {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
 
