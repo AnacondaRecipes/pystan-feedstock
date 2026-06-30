@@ -10,7 +10,7 @@ source:
   sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
 
 build:
-  number: 0
+  number: 1
   # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
   # Windows is not supported in pystan 3
   # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
