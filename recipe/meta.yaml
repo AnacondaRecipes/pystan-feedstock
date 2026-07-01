@@ -6,11 +6,11 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
 
 build:
-  number: 0
+  number: 1
   # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
   # Windows is not supported in pystan 3
   # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
@@ -30,7 +30,10 @@ requirements:
     - pysimdjson >=5.0.2,<7
     - numpy >=1.19
     - clikit >=0.6,<0.7
-    - setuptools
+    # ModuleNotFoundError: No module named 'pkg_resources'
+    - setuptools <82
+  run_constrained:
+    - setuptools <82
 
 test:
   commands:
