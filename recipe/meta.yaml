@@ -1,5 +1,5 @@
 {% set name = "pystan" %}
-{% set version = "3.10.0" %}
+{% set version = "3.14.0" %}
 
 package:
   name: {{ name }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
+  sha256: d5d06ff5225847358ad78d563c6d3ea8514cc77b33b33587d54af64623048b12
 
 build:
-  number: 1
+  number: 0
   # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
   # Windows is not supported in pystan 3
   # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
@@ -22,16 +22,17 @@ requirements:
   host:
     - python
     - pip
-    - poetry-core >=1.0.0
+    - poetry-core
   run:
     - python
-    - aiohttp >=3.6,<4.0
-    - httpstan >=4.13,<4.14
+    - aiohttp >=3.6.0,<4.0.0
+    - httpstan >=4.17.0,<4.18.0
     - pysimdjson >=5.0.2,<7
     - numpy >=1.19
-    - clikit >=0.6,<0.7
+    - clikit >=0.6.0,<0.7.0
     # ModuleNotFoundError: No module named 'pkg_resources'
-    - setuptools <82
+    - setuptools
+    - orjson >=3.10
   run_constrained:
     - setuptools <82
 
