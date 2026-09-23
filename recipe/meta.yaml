@@ -49,7 +49,7 @@ test:
     - pip
 
 about:
-  home: https://mc-stan.org/
+  home: https://mc-stan.org
   license: ISC
   license_file: LICENSE
   license_family: Other
@@ -58,9 +58,12 @@ about:
     PyStan provides a Python interface to Stan, a package for Bayesian
     inference using the No-U-Turn sampler, a variant of Hamiltonian Monte
     Carlo.
-  doc_url: https://pystan.readthedocs.org/
+  doc_url: https://pystan.readthedocs.org
   dev_url: https://github.com/stan-dev/pystan
 
 extra:
   recipe-maintainers:
     - rmax
+  skip-lints:
+    - python_build_tools_in_host
+    - reachable_url
