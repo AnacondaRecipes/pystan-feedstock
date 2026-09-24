@@ -1,20 +1,21 @@
 {% set name = "pystan" %}
-{% set version = "3.10.0" %}
+{% set version = "3.14.0" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 2e6c1cdbec8b2769f134b35a19e59e6655074da0c2f807af78dc310a99a8eb79
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d5d06ff5225847358ad78d563c6d3ea8514cc77b33b33587d54af64623048b12
 
 build:
-  number: 1
+  number: 0
   # Upstream does not support python 3.13 due to an outdated pinning of pysimdjson
+  # `httpstan` does not support py<312 - https://github.com/stan-dev/httpstan/blob/b00235f210a0b3f0e18c2212aef7524a4d9da0f1/pyproject.toml#L33
   # Windows is not supported in pystan 3
   # https://pystan.readthedocs.io/en/latest/faq.html#is-windows-supported
-  skip: true  # [win or (py<310 or py>=313)]
+  skip: true  # [win or (py<312 or py>313)]
   script:
     - {{ PYTHON }} -m pip install . --no-build-isolation --no-deps
 
@@ -25,11 +26,11 @@ requirements:
     - poetry-core >=1.0.0
   run:
     - python
-    - aiohttp >=3.6,<4.0
-    - httpstan >=4.13,<4.14
-    - pysimdjson >=5.0.2,<7
+    - aiohttp >=3.6.0,<4.0.0
+    - httpstan >=4.17.0,<4.18.0
+    - orjson >=3.10
     - numpy >=1.19
-    - clikit >=0.6,<0.7
+    - clikit >=0.6.0,<0.7.0
     # ModuleNotFoundError: No module named 'pkg_resources'
     - setuptools <82
   run_constrained:
@@ -48,7 +49,7 @@ test:
     - pip
 
 about:
-  home: https://mc-stan.org/interfaces/pystan.html
+  home: https://mc-stan.org
   license: ISC
   license_file: LICENSE
   license_family: Other
@@ -57,9 +58,12 @@ about:
     PyStan provides a Python interface to Stan, a package for Bayesian
     inference using the No-U-Turn sampler, a variant of Hamiltonian Monte
     Carlo.
-  doc_url: https://pystan.readthedocs.org/
+  doc_url: https://pystan.readthedocs.org
   dev_url: https://github.com/stan-dev/pystan
 
 extra:
   recipe-maintainers:
     - rmax
+  skip-lints:
+    - python_build_tools_in_host
+    - reachable_url
